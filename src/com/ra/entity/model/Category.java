@@ -16,7 +16,6 @@ public class Category implements ICategory, Serializable {
 
     public Category() {
     }
-
     public Category(int id, String name, String description, boolean status) {
         this.id = id;
         this.name = name;
@@ -44,8 +43,11 @@ public class Category implements ICategory, Serializable {
         CategoryService categoryService = new CategoryService();
         if(id < 0)
             throw new Exception("Id phải lớn hơn 0");
-        if(categoryService.findAny(category -> category.getId() == id))
-            throw new Exception("Id đã tồn tại");
+//        if(categoryService.findAny(category -> category.getId() == id))
+//            throw new Exception("Id đã tồn tại");
+        if(categoryService.findAny(category -> category.getId() == id)){
+            this.id = categoryService.getAllToFile().size() + 1;
+        }
         this.id = id;
     }
 
@@ -63,19 +65,16 @@ public class Category implements ICategory, Serializable {
 
         this.name = name;
     }
-
     public void setDescription(String description) throws Exception {
         if(description == null || description.length() <=0)
             throw new Exception( "Mô tả không được để trống");
         this.description = description;
     }
-
     public void setStatus(boolean status)   {
         this.status = status;
     }
-
     @Override
-    public void inputData(Scanner sc) {
+    public void inputData(Scanner sc) throws Exception {
         boolean flag = true;
         do {
             try{
@@ -118,21 +117,13 @@ public class Category implements ICategory, Serializable {
         }while (flag);
 
         if(this.id==0)
-            this.id = AUTO_ID++;
+             setId(++AUTO_ID);
 
     }
 
     @Override
     public void displayData() {
         String statusString = isStatus() ? "Hoạt động" : "Không hoạt động";
-//        System.out.println("Id: " + getId());
-//        System.out.println("Tên danh mục: " + getName());
-//        System.out.println("Mô tả: " + getDescription());
-//        System.out.println("Trạng thái: " + statusString);
-
-        System.out.printf("| %-6d | %-20s | %-25s| %-15s  |%n",
-                getId(),getName(),getDescription(),statusString);
-
+        System.out.printf("| %-6d | %-20s | %-25s| %-15s  |%n", getId(),getName(),getDescription(),statusString);
     }
-
 }

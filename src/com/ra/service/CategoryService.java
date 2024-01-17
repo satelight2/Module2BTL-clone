@@ -61,7 +61,7 @@ public class CategoryService implements CategoryServiceImpl {
     }
 
     @Override
-    public void addCategory() {
+    public void addCategory() throws Exception {
         Scanner scanner = new Scanner(System.in);
         List<Category> categories = getAllToFile(); // lay danh sach tu file ra
         do {
@@ -100,22 +100,36 @@ public class CategoryService implements CategoryServiceImpl {
     }
 
     @Override
-    public void updateCategory() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Nhập vào mã danh mục cần sửa");
-        Integer categoryCodeEdit = Integer.parseInt(scanner.nextLine());
-        List<Category> categories = getAllToFile();
-        Category category = findByCategoryCodeInListCategory(categoryCodeEdit,categories);
-        if(category !=null){
-            // hien thi thong tin cu
-            category.displayData();
-            // nhap thong tin moi
-           category.inputData(scanner);
-            saveToFile(categories);
+    public void updateCategory() throws Exception {
+        boolean flag = true;
+        do{
+            try {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Nhập vào mã danh mục cần sửa");
+            List<Category> categories = getAllToFile();
+            for (int i = 0;i < categories.size(); i++) {
+                System.out.println((i+1)+". "+categories.get(i).getName());
+            }
+            int choice = Integer.parseInt(scanner.nextLine());
+            if(choice < 1 || choice > categories.size()){
+                System.out.println("Vui lòng lựa chọn trong khoảng từ 1 đến "+categories.size());
+                return;
+            }
+            Category category = categories.get(choice-1);
+            if(category != null){
+                category.displayData();
+                category.inputData(scanner);
+                saveToFile(categories);
+                System.out.println("Sửa danh mục thành công");
+                flag = false;
+            } else {
+                System.out.println("Không tìm thấy danh mục với id là :"+choice);
+            }
 
-        } else {
-            System.out.println("Không tìm thấy danh mục với id là :"+categoryCodeEdit);
-        }
+        } catch (Exception e){
+            System.out.println("Vui lòng nhập vào số nguyên dương và không được để trống");
+        }}while (flag);
+
 
     }
 
@@ -142,53 +156,68 @@ public class CategoryService implements CategoryServiceImpl {
     @Override
     public void findByCategoryNameInListCategory(String categoryName) {
         List<Category> category = getAllToFile();
+       int count = 0;
         for (Category category1 : category) {
+
             if(category1.getName().contains(categoryName)){
+                    count ++;
                  category1.displayData();
             }
         }
-        System.out.println("Không tìm thấy danh mục với tên :"+categoryName);
+        if(count == 0){
+            System.out.println("Không tìm thấy danh mục nào có tên là :"+categoryName);
+        }
+
 
     }
 
     @Override
     public void deleteCategory() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Nhập vào mã danh mục cần xóa");
-        List<Category> categories = getAllToFile();
-        for (int i = 0;i < categories.size(); i++) {
-            System.out.println((i+1)+". "+categories.get(i).getName());
-        }
-        int choice = Integer.parseInt(scanner.nextLine());
-        if(choice < 1 || choice > categories.size()){
-            System.out.println("Vui lòng lựa chọn trong khoảng từ  1->"+categories.size());
-            return;
-        }
-        Integer categoryCodeDelete = categories.get(choice-1).getId();
-        Category category = findByCategoryCodeInListCategory(categoryCodeDelete,categories);
-        //kiem tra neu trong categories co chua product thi ko xoa
-        List<Product> products = new ProductService().getAllToFile();
-        // kiem tra xem trong list products co chua category trung voi category.getid ko
-        boolean isExist = products.stream().anyMatch(product -> product.getCategoryId() == category.getId());
-        if(category !=null){
-            if(isExist){
-                System.out.println("Không thể xóa danh mục này vì danh mục này đang chứa sản phẩm");
-                return;
-            }else{
-                System.out.println("Bạn có chắc chắn muốn xóa danh mục này không?");
-                System.out.println("1. Có");
-                System.out.println("2. Không");
-                int choice1 = Integer.parseInt(scanner.nextLine());
-                if(choice1 == 2){
-                    return;
-                }
-                categories.remove(category);
-                saveToFile(categories);
-                System.out.println("Xóa thành công");
+        boolean flag = true;
+      do{
+          try {
+              Scanner scanner = new Scanner(System.in);
+              System.out.println("Nhập vào mã danh mục cần xóa");
+              List<Category> categories = getAllToFile();
+              for (int i = 0;i < categories.size(); i++) {
+                  System.out.println((i+1)+". "+categories.get(i).getName());
+              }
+              int choice = Integer.parseInt(scanner.nextLine());
+              if(choice < 1 || choice > categories.size()){
+                  System.out.println("Vui lòng lựa chọn trong khoảng từ  1->"+categories.size());
+                  return;
+              }
+              Integer categoryCodeDelete = categories.get(choice-1).getId();
+              Category category = findByCategoryCodeInListCategory(categoryCodeDelete,categories);
+              //kiem tra neu trong categories co chua product thi ko xoa
+              List<Product> products = new ProductService().getAllToFile();
+              // kiem tra xem trong list products co chua category trung voi category.getid ko
+              boolean isExist = products.stream().anyMatch(product -> product.getCategory().getId() == category.getId());
+              if(category !=null){
+                  if(isExist){
+                      System.out.println("Không thể xóa danh mục này vì danh mục này đang chứa sản phẩm");
+                      return;
+                  }else{
+                      System.out.println("Bạn có chắc chắn muốn xóa danh mục này không?");
+                      System.out.println("1. Có");
+                      System.out.println("2. Không");
+                      int choice1 = Integer.parseInt(scanner.nextLine());
+                      if(choice1 == 2){
+                          return;
+                      }
+                      categories.remove(category);
+                      saveToFile(categories);
+                      System.out.println("Xóa thành công");
+                        flag = false;
+                  }
+              } else {
+                  System.out.println("Rất tiếc không thể tìm thấy danh mục nào nào với mã là "+categoryCodeDelete);
+              }
+          }catch (Exception e){
+              System.out.println("Vui lòng nhập vào số nguyên dương và không được để trống");
             }
-        } else {
-            System.out.println("Rất tiếc không thể tìm thấy danh mục nào nào với mã là "+categoryCodeDelete);
-        }
+      }while (flag);
+
 
     }
 
@@ -203,25 +232,33 @@ public class CategoryService implements CategoryServiceImpl {
     }
     @Override
     public void statisticCategory() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Chọn danh mục cần thống kê");
-        List<Category> categories = getAllToFile();
-        for (int i = 0;i < categories.size(); i++) {
-            System.out.println((i+1)+". "+categories.get(i).getName());
-        }
-        int choice = Integer.parseInt(scanner.nextLine());
-        if(choice < 1 || choice > categories.size()){
-            System.out.println("Vui lòng nhập trong khoảng 1->"+categories.size());
-            return;
-        }
-        Integer categoryCodeDelete = categories.get(choice-1).getId();
-        Category category = findByCategoryCodeInListCategory(categoryCodeDelete,categories);
-        List<Product> products = new ProductService().getAllToFile();
-        List<Product> statisticListProduct = products.stream().filter(product -> product.getCategoryId() == category.getId()).collect(Collectors.toList());
-        System.out.println("Số lượng sản phẩm thuộc danh mục "+ category.getName()+" là "+statisticListProduct.size() + " sản phẩm");
-        for (Product product : statisticListProduct) {
-            product.displayData();
-        }
+        boolean flag = true;
+        do{
+            try {
+                Scanner scanner = new Scanner(System.in);
+                System.out.println("Chọn danh mục cần thống kê");
+                List<Category> categories = getAllToFile();
+                for (int i = 0;i < categories.size(); i++) {
+                    System.out.println((i+1)+". "+categories.get(i).getName());
+                }
+                int choice = Integer.parseInt(scanner.nextLine());
+                if(choice < 1 || choice > categories.size()){
+                    System.out.println("Vui lòng nhập trong khoảng 1->"+categories.size());
+                    return;
+                }
+                Integer categoryCodeDelete = categories.get(choice-1).getId();
+                Category category = findByCategoryCodeInListCategory(categoryCodeDelete,categories);
+                List<Product> products = new ProductService().getAllToFile();
+                List<Product> statisticListProduct = products.stream().filter(product -> product.getCategory().getId() == category.getId()).collect(Collectors.toList());
+                System.out.println("Số lượng sản phẩm thuộc danh mục "+ category.getName()+" là "+statisticListProduct.size() + " sản phẩm");
+                for (Product product : statisticListProduct) {
+                    product.displayData();
+                }
+                flag = false;
+            }catch (Exception e){
+                System.err.println("Vui lòng nhập vào số nguyên dương và không được để trống");
+            }
+        } while (flag);
     }
 
 

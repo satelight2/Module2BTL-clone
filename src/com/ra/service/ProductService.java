@@ -62,18 +62,22 @@ public class ProductService implements ProductServiceImpl {
         Scanner scanner = new Scanner(System.in);
         List<Product> products = getAllToFile(); // lay danh sach tu file ra
         do {
-            // khoi tao doi tuong Category
-            Product product = new Product();
-            product.inputData(scanner);
-            products.add(product);
-            System.out.println("Thêm sản phẩm thành công");
-            System.out.println("Bạn có muốn nhập tiếp ko ?");
-            System.out.println("1. Có");
-            System.out.println("2. Không");
-            int choice = Integer.parseInt(scanner.nextLine());
-            if(choice == 2){
-                break;
-            }
+         try{
+             // khoi tao doi tuong Category
+             Product product = new Product();
+             product.inputData(scanner);
+             products.add(product);
+             System.out.println("Thêm sản phẩm thành công");
+             System.out.println("Bạn có muốn nhập tiếp ko ?");
+             System.out.println("1. Có");
+             System.out.println("2. Không");
+             int choice = Integer.parseInt(scanner.nextLine());
+             if(choice == 2){
+                 break;
+             }
+         }catch (Exception e){
+             System.out.println("Vui lòng nhập số nguyên dương");
+         }
         } while (true);
 
         saveToFile(products);
@@ -97,38 +101,46 @@ public class ProductService implements ProductServiceImpl {
 
     @Override
     public void updateProduct() throws Exception {
-        System.out.println("Nhap id san pham can sua");
-        Scanner scanner = new Scanner(System.in);
-        String id = scanner.nextLine();
-        List<Product> products = getAllToFile();
-        for (int i = 0; i < products.size(); i++) {
-            if(products.get(i).getId().equals(id)){
-                System.out.println("Nhap thong tin moi");
-                System.out.println("Nhap ten san pham");
-                products.get(i).setProductName(scanner.nextLine());
-                System.out.println("Nhap gia san pham");
-                products.get(i).setImportPrice(Double.parseDouble(scanner.nextLine()));
-                System.out.println("Nhap gia ban");
-                products.get(i).setExportPrice(Double.parseDouble(scanner.nextLine()));
-                System.out.println("Nhap mo ta");
-                products.get(i).setDescription(scanner.nextLine());
-                System.out.println("Nhap trang thai");
-                products.get(i).setStatus(Boolean.parseBoolean(scanner.nextLine()));
-                System.out.println("Chon danh muc san pham");
-                CategoryService categoryService = new CategoryService();
-                List<Category> categories = categoryService.getAllToFile();
-                for (int j = 0;j < categories.size(); j++) {
-                    System.out.println((j+1)+". "+categories.get(j).getName());
-                }
-                int choice = Integer.parseInt(scanner.nextLine());
-                if(choice < 1 || choice > categories.size())
-                    throw new Exception("Chỉ được chọn từ 1 - "+categories.size());
-                products.get(i).setCategoryId(categories.get(choice-1).getId());
-            }
-            System.out.println("Không tìm thấy sản phẩm với id " + id + " để sửa");
+        boolean flag = true;
+        do {
+            try{
+                System.out.println("Nhap id sản phẩm cần sửa");
+                Scanner scanner = new Scanner(System.in);
+                String id = scanner.nextLine();
+                List<Product> products = getAllToFile();
+                boolean isFound = false;
+                for (int i = 0; i < products.size(); i++) {
+                    if(products.get(i).getId().equals(id)){
+                        isFound = true;
+                        System.out.println("Tìm thấy sản phẩm với id " + id + " để sửa");
+                        products.get(i).displayData();
+                        System.out.println("Nhập thông tin mới cho sản phẩm ");
+                        System.out.println("Nhập tên mới cho sản phẩm");
+                        products.get(i).inputProductName(scanner);
+                        System.out.println("Nhập giá nhập mới cho sản phẩm");
+                        products.get(i).inputImportPrice(scanner);
+                        System.out.println("Nhập giá bán mới cho sản phẩm");
+                        products.get(i).inputExportPrice(scanner);
+                        System.out.println("Nhập mô tả mới cho sản phẩm");
+                        products.get(i).inputDescription(scanner);
+                        System.out.println("Nhập trạng thái mới cho sản phẩm");
+                        products.get(i).inputStatus(scanner);
+                        System.out.println("Chọn danh mục mới cho sản phẩm ");
+                        products.get(i).inputCategory(scanner);
+                        System.out.println("Sửa thành công");
+                        flag = false;
+                    }
 
-        }
-        saveToFile(products);
+                }
+                if(!isFound){
+                    System.out.println("Không tìm thấy sản phẩm với id " + id + " để sửa");
+                }
+                saveToFile(products);
+            }
+            catch (Exception e){
+                System.out.println("Nhập sai định dạng");
+            }
+        }while (flag);
 
     }
 
@@ -138,20 +150,23 @@ public class ProductService implements ProductServiceImpl {
         Scanner scanner = new Scanner(System.in);
         String id = scanner.nextLine();
         List<Product> products = getAllToFile();
+        boolean isFound = false;
         for (int i = 0; i < products.size(); i++) {
             if(products.get(i).getId().equals(id)){
                 System.out.println("Bạn có chắc chắn muốn xóa sản phẩm này ko ?");
                 System.out.println("1. Có");
                 System.out.println("2. Không");
-
+                isFound = true;
                 int choice = Integer.parseInt(scanner.nextLine());
                 if(choice == 1){
                     products.remove(i);
                     System.out.println("Xóa thành công");
                     break;
                 }
-
             }
+
+        }
+        if(!isFound){
             System.out.println("Không tìm thấy sản phẩm với id " + id + " để xóa");
         }
         saveToFile(products);
@@ -164,11 +179,15 @@ public class ProductService implements ProductServiceImpl {
         Scanner scanner = new Scanner(System.in);
         String value = scanner.nextLine();
         List<Product> products = getAllToFile();
+        boolean isFound = false;
         for (Product product : products) {
             if(product.getProductName().contains(value) || product.getExportPrice() == Double.parseDouble(value)){
+                isFound = true;
                 product.displayData();
             }
-            System.out.println("Không tìm thấy sản phẩm với id " + value + " để xóa");
+        }
+        if(!isFound){
+            System.out.println("Không tìm thấy sản phẩm với tên hoặc giá " + value);
         }
 
     }

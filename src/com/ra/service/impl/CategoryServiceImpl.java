@@ -8,9 +8,9 @@ import java.util.function.Predicate;
 public interface CategoryServiceImpl {
     void saveToFile(List<Category> list);
     List<Category> getAllToFile();
-    void addCategory();
+    void addCategory() throws Exception;
     void showListCategory();
-    void updateCategory();
+    void updateCategory() throws Exception;
     boolean findAny(Predicate<Category> predicate);
     Category findByCategoryCodeInListCategory(Integer categoryCode,List<Category> category);
     void findByCategoryNameInListCategory(String categoryName);

@@ -18,23 +18,28 @@ public class Menu {
             System.out.println("3. Thoát");
             System.out.println("Mời bạn chọn từ 1 - 3");
             System.out.print("Lựa chọn của bạn là: ");
-            int choice = Integer.parseInt(scanner.nextLine());
-            switch (choice){
-                case 1:
-                    menuCategory();
-                    break;
-                case 2:
-                    menuProduct();
-                    break;
-                case 3:
-                    System.exit(0);
-                default:
-                    System.out.println("Chọn sai mời chọn lại");
+
+            try{
+                int choice = Integer.parseInt(scanner.nextLine());
+                switch (choice){
+                    case 1:
+                        menuCategory();
+                        break;
+                    case 2:
+                        menuProduct();
+                        break;
+                    case 3:
+                        System.exit(0);
+                    default:
+                        System.out.println("Chọn sai mời chọn lại");
+                }
+            }catch (NumberFormatException e){
+                System.err.println("Lựa chọn phải là số nguyên từ 1 - 3");
             }
         } while (true);
 
     }
-    public static void menuCategory(){
+    public static void menuCategory() throws Exception {
         boolean check = true;
         do {
             System.out.println("======== QUẢN LÝ DANH MỤC=========");
@@ -47,39 +52,58 @@ public class Menu {
             System.out.println("7. Quay lại");
             System.out.println("Mời bạn chọn từ 1 - 6");
             System.out.print("Lựa chọn của bạn là: ");
-            int choice1 = Integer.parseInt(scanner.nextLine());
-            switch (choice1){
-                case 1:
-                    System.out.println("Thực hiện thêm mới");
-                    categoryService.addCategory();
-                    break;
-                case 2:
-                    System.out.println("Thực hiện cập nhật");
-                    categoryService.updateCategory();
-                    break;
-                case 3:
-                    System.out.println("Thực hiện xem");
-                    categoryService.showListCategory();
-                    break;
-                case 4:
-                    System.out.println("Thực hiện xóa");
-                    categoryService.deleteCategory();
-                    break;
-                case 5:
-                    System.out.println("Thực hiện tìm kiếm");
-                    System.out.println("Nhập tên danh mục cần tìm kiếm: ");
-                    String name = scanner.nextLine();
-                    categoryService.findByCategoryNameInListCategory(name);
-                    break;
-                case 6:
-                    System.out.println("Thực hiện thống kê");
-                    categoryService.statisticCategory();
-                    break;
-                case 7:
-                    check = false;
-                    break;
-                default:
-                    System.out.println("Chọn sai mời chọn lại");
+
+            try{
+                int choice1 = Integer.parseInt(scanner.nextLine());
+                switch (choice1){
+                    case 1:
+                        System.out.println("Thực hiện thêm mới");
+                        categoryService.addCategory();
+                        break;
+                    case 2:
+                        System.out.println("Thực hiện cập nhật");
+                        categoryService.updateCategory();
+                        break;
+                    case 3:
+                        System.out.println("Thực hiện xem");
+                        categoryService.showListCategory();
+                        break;
+                    case 4:
+                        System.out.println("Thực hiện xóa");
+                        categoryService.deleteCategory();
+                        break;
+                    case 5:
+                        System.out.println("Thực hiện tìm kiếm");
+                        System.out.println("Nhập tên danh mục cần tìm kiếm: ");
+                        String name = scanner.nextLine();
+                        categoryService.findByCategoryNameInListCategory(name);
+                        break;
+//                    do {
+//                        System.out.println("Nhập vào ID muốn cập nhật: ");
+//                        String idUpdate = sc.nextLine();
+//                        Product updateProduct = productService.searchProductById(idUpdate);
+//                        if(updateProduct == null){
+//                            System.err.printf("Sản phẩm có ID là %s không tồn tại.\n",idUpdate);
+//                        } else {
+//                            productService.update(sc,updateProduct);
+//                        }
+//                        System.out.print("Bạn có muốn tiếp tục cập nhật sản phẩm khác không (Y/N):");
+//                        selection = sc.nextLine();
+//                    } while (selection.equalsIgnoreCase("Y"));
+//                    break;
+                    case 6:
+                        System.out.println("Thực hiện thống kê");
+                        categoryService.statisticCategory();
+                        break;
+                    case 7:
+                        check = false;
+                        break;
+                    default:
+                        System.out.println("Chọn sai mời chọn lại");
+                }
+            }catch (NumberFormatException e){
+                System.err.println("Lựa chọn phải là số nguyên từ 1 - 6");
+
             }
         } while (check);
     }
@@ -97,41 +121,47 @@ public class Menu {
             System.out.println("8. Quay lại");
             System.out.println("Mời bạn chọn từ 1 - 5");
             System.out.print("Lựa chọn của bạn là: ");
-            int choice1 = Integer.parseInt(scanner.nextLine());
-            switch (choice1){
-                case 1:
-                    System.out.println("Thực hiện thêm mới Sản phẩm");
-                    productService.addProduct();
-                    break;
-                case 2:
-                    System.out.println("Xem danh sách Sản phẩm");
-                    productService.showProduct();
-                    break;
-                case 3:
-                    System.out.println("Thực hiện cập nhật Sản phẩm");
-                    productService.updateProduct();
-                    break;
-                case 4:
-                    System.out.println("Thực hiện xóa Sản phẩm");
-                    productService.deleteProduct();
-                    break;
-                case 5:
-                    System.out.println("Thực hiện tìm kiếm Sản phẩm");
-                    productService.searchProduct();
-                    break;
-                case 6:
-                    System.out.println("Hiển thị sản phẩm theo tên A-Z");
-                    productService.sortByName();
-                    break;
-                case 7:
-                    System.out.println("Hiển thị sản phẩm theo lợi nhuận từ cao-thấp");
-                    productService.sortByProfit();
-                    break;
-                case 8:
-                    check = false;
-                    break;
-                default:
-                    System.out.println("Chọn sai mời chọn lại");
+
+            try{
+                int choice1 = Integer.parseInt(scanner.nextLine());
+                switch (choice1){
+                    case 1:
+                        System.out.println("Thực hiện thêm mới Sản phẩm");
+                        productService.addProduct();
+                        break;
+                    case 2:
+                        System.out.println("Xem danh sách Sản phẩm");
+                        productService.showProduct();
+                        break;
+                    case 3:
+                        System.out.println("Thực hiện cập nhật Sản phẩm");
+                        productService.updateProduct();
+                        break;
+                    case 4:
+                        System.out.println("Thực hiện xóa Sản phẩm");
+                        productService.deleteProduct();
+                        break;
+                    case 5:
+                        System.out.println("Thực hiện tìm kiếm Sản phẩm");
+                        productService.searchProduct();
+                        break;
+                    case 6:
+                        System.out.println("Hiển thị sản phẩm theo tên A-Z");
+                        productService.sortByName();
+                        break;
+                    case 7:
+                        System.out.println("Hiển thị sản phẩm theo lợi nhuận từ cao-thấp");
+                        productService.sortByProfit();
+                        break;
+                    case 8:
+                        check = false;
+                        break;
+                    default:
+                        System.out.println("Chọn sai mời chọn lại");
+                }
+            }catch (NumberFormatException e){
+                System.err.println("Lựa chọn phải là số nguyên từ 1 - 8");
+
             }
         } while (check);
     }
