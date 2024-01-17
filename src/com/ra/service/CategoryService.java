@@ -67,16 +67,21 @@ public class CategoryService implements CategoryServiceImpl {
         do {
 
             // khoi tao doi tuong Category
-            Category category = new Category();
-            category.inputData(scanner);
-            categories.add(category);
-            System.out.println("Thêm danh mục thành công");
-            System.out.println("Bạn có muốn nhập tiếp không? ");
-            System.out.println("1. Có");
-            System.out.println("2. Không");
-            int choice = Integer.parseInt(scanner.nextLine());
-            if(choice == 2){
-                break;
+            try{
+                Category category = new Category();
+                category.inputData(scanner);
+                categories.add(category);
+                System.out.println("Thêm danh mục thành công");
+                System.out.println("Bạn có muốn nhập tiếp không? ");
+                System.out.println("1. Có");
+                System.out.println("2. Không");
+                int choice = Integer.parseInt(scanner.nextLine());
+                if(choice == 2){
+                    break;
+                }
+            }
+            catch (Exception e){
+                System.out.println("Vui lòng chọn 1 hoặc 2");
             }
         } while (true);
 

@@ -97,7 +97,7 @@ public class Product implements IProduct, Serializable {
     public void setExportPrice(double exportPrice) throws Exception {
         if(exportPrice < 0)
             throw new Exception("Giá bán phải lớn hơn 0");
-        if(exportPrice < importPrice)
+        if(exportPrice < importPrice*(1+MIN_INTEREST_RATE))
             throw new Exception("Giá bán phải lớn hơn giá nhập ít nhất "+MIN_INTEREST_RATE+" lần" );
         this.exportPrice = exportPrice;
     }

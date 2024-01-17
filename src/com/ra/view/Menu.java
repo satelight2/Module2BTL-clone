@@ -78,19 +78,6 @@ public class Menu {
                         String name = scanner.nextLine();
                         categoryService.findByCategoryNameInListCategory(name);
                         break;
-//                    do {
-//                        System.out.println("Nhập vào ID muốn cập nhật: ");
-//                        String idUpdate = sc.nextLine();
-//                        Product updateProduct = productService.searchProductById(idUpdate);
-//                        if(updateProduct == null){
-//                            System.err.printf("Sản phẩm có ID là %s không tồn tại.\n",idUpdate);
-//                        } else {
-//                            productService.update(sc,updateProduct);
-//                        }
-//                        System.out.print("Bạn có muốn tiếp tục cập nhật sản phẩm khác không (Y/N):");
-//                        selection = sc.nextLine();
-//                    } while (selection.equalsIgnoreCase("Y"));
-//                    break;
                     case 6:
                         System.out.println("Thực hiện thống kê");
                         categoryService.statisticCategory();
