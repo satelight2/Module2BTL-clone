@@ -41,13 +41,10 @@ public class Category implements ICategory, Serializable {
 
     public void setId(int id) throws Exception{
         CategoryService categoryService = new CategoryService();
-        if(id < 0)
+        if(id <= 0)
             throw new Exception("Id phải lớn hơn 0");
-//        if(categoryService.findAny(category -> category.getId() == id))
-//            throw new Exception("Id đã tồn tại");
-        if(categoryService.findAny(category -> category.getId() == id)){
-            this.id = categoryService.getAllToFile().size() + 1;
-        }
+        if(categoryService.findAny(category -> category.getId() == id))
+            throw new Exception("Id đã tồn tại");
         this.id = id;
     }
 
@@ -117,7 +114,7 @@ public class Category implements ICategory, Serializable {
         }while (flag);
 
         if(this.id==0)
-             setId(++AUTO_ID);
+             id = AUTO_ID++;
 
     }
 
